@@ -65,8 +65,14 @@ df2daysf.isnull().values.any()
 # filter/remove rows with missing values (na) (Be careful!!!)
 df2daysf = df2daysf.dropna()
 df2daysf.isnull().values.any()
-print (df2daysf.shape)
 
+# 1.4 trim data frequency
+# deleting even rows to reduce frequency data by half
+df2daysf=df2daysf[::2]
+# deleting even rows to reduce frequency data by four
+# df2daysf=df2daysf[::4]
+
+print (df2daysf.shape)
 
 # 2. Principal Component Analysis
 #2.1 Scalation
