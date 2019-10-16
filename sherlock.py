@@ -15,6 +15,8 @@ tol = 1e-04
 random_state = 0
 init = "random"
 
+#--------------------FUNCTIONS---------------------#
+
 def transformPCA(df, n):
     # 2. Principal Component Analysis
     #2.1 Scalation
@@ -142,7 +144,7 @@ def HRC(df):
     fig.tight_layout()
     plt.show()
 
-#-------------------------------------------------------#
+#--------------------DATA FILTER---------------------#
 
 #0 . Load the data 
 # read the csv
@@ -204,9 +206,9 @@ print (df2daysf.shape)
 
 #Choose function
 
-# X_pca = transformPCA(df2daysf, 3)
-# Krange(X_pca)
+X_pca = transformPCA(df2daysf, 3)
+Krange(X_pca)
     # best k for OriantationMEAN 7 or 10
 # Kmeans(X_pca, 7)
-HRC(df2daysf)
+# HRC(df2daysf)
 
