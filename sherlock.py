@@ -145,70 +145,101 @@ def HRC(df):
     plt.show()
 
 #--------------------DATA FILTER---------------------#
+def cleanData(df):
+    #0 . Load the data 
+    # read the csv
+    # df = pd.read_csv("T2.csv")
+    # list the columns
+    list(df)
+    # print number of rows and columns 
+    print (df.shape)
+
+    # 1. Filtering
+
+    # 1.1 Filter rows
+    # convert string to datetime .... Be careful!!! Spelling errors!!!
+    df['TimeStemp'] = pd.to_datetime(df['TimeStemp'])
+    # extract date from datetime
+    df['date'] = [d.date() for d in df['TimeStemp']]
+    # list the available days
+    df['date'].unique()
+    #filter data by date. We take first two wednesdays from the dataset
+    df04 = df[(df['TimeStemp'] > '2016-05-04 00:00:00') & (df['TimeStemp'] <= '2016-05-04 23:59:59')]
+    df11 = df[(df['TimeStemp'] > '2016-05-11 00:00:00') & (df['TimeStemp'] <= '2016-05-11 23:59:59')]
+    #group both days of data
+    frames = [df04, df11]
+    #concatenate both days of data
+    df2days = pd.concat(frames)
+
+    print (df2days.shape)
+
+    #1.2. Filter Features
+
+    # Gyroscope
+    # df2daysf = df2days[[c for c in df if c.startswith('GyroscopeStat') and c.endswith('MEAN')]]
+    # Orientation
+    df2daysf = df2days[[c for c in df if c.startswith('OrientationProbe') and c.endswith('MEAN')]]
+    # Pressure
+    # df2daysf = df2days[[c for c in df if c.startswith('Pressure')]]
+    # Accelerometer
+    # df2daysf = df2days[[c for c in df if c.startswith('AccelerometerStat') and c.endswith('MEAN')]]
+    # LinearAcceleration
+    # df2daysf = df2days[[c for c in df if c.startswith('LinearAcceleration') and c.endswith('MEAN')]]
+    # All means
+    # df2daysf = df2daysf[[c for c in df if c.endswith('MEAN')]]
+    list(df2daysf)
+
+    # 1.3 remove missing values
+    df2daysf.isnull().values.any()
+    # filter/remove rows with missing values (na) (Be careful!!!)
+    df2daysf = df2daysf.dropna()
+    df2daysf.isnull().values.any()
+
+    # 1.4 trim data frequency
+    # deleting even rows to reduce frequency data by half
+    # df2daysf=df2daysf[::2]
+    # deleting even rows to reduce frequency data by four
+    df2daysf=df2daysf[::4]
+    #we could also trim with the mean
+    print(df2daysf.shape)
+    df2daysf.to_csv("T2_clean.csv",mode = 'w', index=False)
+    return df2daysf
+
+def plotData3D(df):
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    x = df.iloc[:,0]
+    y = df.iloc[:,1]
+    z = df.iloc[:,2]
+    ax.scatter(x,y,z)
+    ax.set_xlabel("azimut")
+    ax.set_ylabel("pitch")
+    ax.set_zlabel("roll")
+    plt.show()
+
 
 #0 . Load the data 
 # read the csv
-df = pd.read_csv("T2.csv")
+df = pd.read_csv("T2_clean.csv")
 # list the columns
 list(df)
-# print number of rows and columns 
-print (df.shape)
-
-# 1. Filtering
-
-# 1.1 Filter rows
-# convert string to datetime .... Be careful!!! Spelling errors!!!
-df['TimeStemp'] = pd.to_datetime(df['TimeStemp'])
-# extract date from datetime
-df['date'] = [d.date() for d in df['TimeStemp']]
-# list the available days
-df['date'].unique()
-#filter data by date. We take first two wednesdays from the dataset
-df04 = df[(df['TimeStemp'] > '2016-05-04 00:00:00') & (df['TimeStemp'] <= '2016-05-04 23:59:59')]
-df11 = df[(df['TimeStemp'] > '2016-05-11 00:00:00') & (df['TimeStemp'] <= '2016-05-11 23:59:59')]
-#group both days of data
-frames = [df04, df11]
-#concatenate both days of data
-df2days = pd.concat(frames)
-
-print (df2days.shape)
-
-#1.2. Filter Features
-
-# Gyroscope
-# df2daysf = df2days[[c for c in df if c.startswith('GyroscopeStat') and c.endswith('MEAN')]]
-# Orientation
-df2daysf = df2days[[c for c in df if c.startswith('OrientationProbe') and c.endswith('MEAN')]]
-# Pressure
-# df2daysf = df2days[[c for c in df if c.startswith('Pressure')]]
-# Accelerometer
-# df2daysf = df2days[[c for c in df if c.startswith('AccelerometerStat') and c.endswith('MEAN')]]
-# LinearAcceleration
-# df2daysf = df2days[[c for c in df if c.startswith('LinearAcceleration') and c.endswith('MEAN')]]
-# All means
-# df2daysf = df2daysf[[c for c in df if c.endswith('MEAN')]]
-list(df2daysf)
-
-# 1.3 remove missing values
-df2daysf.isnull().values.any()
-# filter/remove rows with missing values (na) (Be careful!!!)
-df2daysf = df2daysf.dropna()
-df2daysf.isnull().values.any()
-
-# 1.4 trim data frequency
-# deleting even rows to reduce frequency data by half
-# df2daysf=df2daysf[::2]
-# deleting even rows to reduce frequency data by four
-df2daysf=df2daysf[::4]
-#we could also trim with the mean
-
-print (df2daysf.shape)
 
 #Choose function
 
-X_pca = transformPCA(df2daysf, 3)
-Krange(X_pca)
-    # best k for OriantationMEAN 7 or 10
+#Clean Data
+# df = cleanData(df)
+
+#Plot Data
+plotData3D(df)
+
+#PCA
+# X_pca = transformPCA(df, 3)
+
+#Kmeans
+    # Krange(X_pca)
+    # best k for OrientationMEAN 7 or 10
 # Kmeans(X_pca, 7)
-# HRC(df2daysf)
+
+#Jerarquico
+# HRC(df)
 
