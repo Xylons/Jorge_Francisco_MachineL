@@ -76,7 +76,13 @@ def Krange(X_pca):
     plt.ylabel('Silhouette')
     plt.show()
 
-def Kmeans(X_pca,k):
+def Kmeans(X_pca, k, isPCA=True, normalize=True):
+    if(not isPCA):
+        X_pca = X_pca.to_numpy()
+    if(normalize):
+        scaler = preprocessing.StandardScaler()
+        X_pca = scaler.fit_transform(X_pca)
+        
     km = KMeans(k, init, n_init = iterations ,max_iter= max_iter, tol = tol,random_state = random_state)
     labels = km.fit_predict(X_pca)
 
@@ -90,7 +96,6 @@ def Kmeans(X_pca,k):
     plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], c='red',s=50)
     plt.show()
 
-
     fig = plt.figure()
     ax = Axes3D(fig)
     x = X_pca[:,0]
@@ -99,9 +104,11 @@ def Kmeans(X_pca,k):
     # plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], km.cluster_centers_[:,2], c='red',s=50)# Analyze why this fails
     ax.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], km.cluster_centers_[:,2], c='red',s=50)
     ax.scatter(x,y,z, c = labels)
+    
     plt.show()
+    print(km.cluster_centers_)
 
-def HRC(df):
+def HRC(df, original):
     from sklearn import preprocessing 
     min_max_scaler = preprocessing.MinMaxScaler()
     datanorm = min_max_scaler.fit_transform(df)
@@ -123,6 +130,7 @@ def HRC(df):
     # http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.hierarchy.dendrogram.html
     # color_threshold a 16 para coger 10 clusters en OrientacionMEAN .4
     # color_threshold a 18 para coger 7 clusters en OrientacionMEAN .4
+    # color_threshold a 10 para coger 7 clusters en OrientacionMEAN .4 X_PCA
     cluster.hierarchy.dendrogram(clusters, color_threshold=18)
     plt.show()
     cut = 18 # !!!! ad-hoc
@@ -134,8 +142,8 @@ def HRC(df):
     colors = numpy.hstack([colors] * 20)
 
     fig, ax = plt.subplots()
-    plt.xlim(-1, 2)
-    plt.ylim(-0.5, 1)
+    plt.xlim(-1, 1.5)
+    plt.ylim(-1.5, 1)
 
     for i in range(len(X_pca)):
         plt.text(X_pca[i][0], X_pca[i][1], 'x', color=colors[labels[i]])  
@@ -144,7 +152,43 @@ def HRC(df):
     fig.tight_layout()
     plt.show()
 
-#--------------------DATA FILTER---------------------#
+    #3D Plot
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    x = X_pca[:,0]
+    y = X_pca[:,1]
+    z = X_pca[:,2]
+    ax.scatter(x,y,z, c = labels)
+    plt.show()
+
+    #Numpy array to dataframe
+    data = pd.DataFrame({'Column1': X_pca[:, 0], 'Column2': X_pca[:, 1], 'Column3': X_pca[:, 2]})
+    #Mean data by group
+    print("\nNormalized data means by group")
+    print(data.groupby(labels).mean())
+
+    #Plot with original data and labeled
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    x = original.iloc[:,0]
+    y = original.iloc[:,1]
+    z = original.iloc[:,2]
+    ax.set_xlabel("azimut")
+    ax.set_ylabel("pitch")
+    ax.set_zlabel("roll")
+    ax.scatter(x,y,z, c = labels)
+    plt.show()
+
+    #Dataframe to numpy to pass labels
+    original = original.to_numpy()
+    for i in range(len(original)):
+        plt.text(original[i][0], original[i][1], 'x', color=colors[labels[i]]) 
+    #Back to dataframe to print group means
+    original = pd.DataFrame({'Azimut': original[:, 0], 'Pitch': original[:, 1], 'Roll': original[:, 2]})
+    print("\nOriginal data means by group")
+    print(original.groupby(labels).mean())
+
+#--------------------DATA FILTER METHOD---------------------#
 def cleanData(df):
     #0 . Load the data 
     # read the csv
@@ -218,28 +262,40 @@ def plotData3D(df):
     plt.show()
 
 
-#0 . Load the data 
-# read the csv
-df = pd.read_csv("T2_clean.csv")
-# list the columns
-list(df)
+###########################################################
 
-#Choose function
 
-#Clean Data
-# df = cleanData(df)
+def main():
+    #0 . Load the data 
+    # read the csv
+    df = pd.read_csv("T2_clean.csv")
+    # list the columns
+    list(df)
 
-#Plot Data
-plotData3D(df)
+    #Choose function
 
-#PCA
-# X_pca = transformPCA(df, 3)
+    #Clean Data
+    # df = cleanData(df)
 
-#Kmeans
-# Krange(X_pca)
-    # best k for OriantationMEAN 7 or 10
-# Kmeans(X_pca, 7)
+    #Plot Data
+    # plotData3D(df)
 
-#Jerarquico
-# HRC(df)
+    #PCA
+    # X_pca = transformPCA(df, 3)
 
+    #Rango Kmeans para Silhouetter y Distorsion
+    # Krange(X_pca)
+
+    #KMeans - best k for OrientationMEAN 7 or 10
+    #Kmeans(Dataframe, 
+    #       Number of clusters, 
+    #       If the dataframe comes from PCA,
+    #       If normalizing is needed )
+    Kmeans(df, 7, False, False)
+
+    #Hierarchical
+    #HRC(Dataframe to use PCA or not, Original df to represent labels on)
+    HRC(df, df)
+
+if __name__ == "__main__":
+     main()
