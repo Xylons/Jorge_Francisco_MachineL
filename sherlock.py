@@ -8,6 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn import preprocessing 
 import matplotlib.pyplot as plt
 import numpy
+import collections
 
 iterations = 10
 max_iter = 300 
@@ -17,6 +18,7 @@ init = "random"
 
 #--------------------FUNCTIONS---------------------#
 
+#PCA analysis method
 def transformPCA(df, n):
     # 2. Principal Component Analysis
     #2.1 Scalation
@@ -53,6 +55,7 @@ def transformPCA(df, n):
     
     return X_pca
 
+#Silhouette and Distorsion method
 def Krange(X_pca):
 
     distortions = []
@@ -76,7 +79,8 @@ def Krange(X_pca):
     plt.ylabel('Silhouette')
     plt.show()
 
-def Kmeans(X_pca, k, isPCA=True, normalize=True):
+#Kmeans clustering method
+def Kmeans(X_pca, k, isPCA=True, normalize=True, bidimensional=False):
     if(not isPCA):
         X_pca = X_pca.to_numpy()
     if(normalize):
@@ -86,28 +90,37 @@ def Kmeans(X_pca, k, isPCA=True, normalize=True):
     km = KMeans(k, init, n_init = iterations ,max_iter= max_iter, tol = tol,random_state = random_state)
     labels = km.fit_predict(X_pca)
 
+    map = collections.Counter(labels)
+
     from sklearn import metrics
-    print (metrics.silhouette_score(X_pca, labels))
+    print ("Silhouette Score:\n"+str(metrics.silhouette_score(X_pca, labels)))
 
-    x = X_pca[:,0]
-    y = X_pca[:,1]
-    plt.scatter(x,y, c = labels)
-    # plotting centroids
-    plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], c='red',s=50)
-    plt.show()
+    print("\nCentroids with number of ocurrences:")
+    for x in range(0,numpy.size(km.cluster_centers_,0)-1):
+        # print(str(km.cluster_centers_[x])+'\t\tlabel: '+str(x)+' number of ocurrences: '+str(map[x]))
+        print('{:<40s} {:<30s}'.format(str(km.cluster_centers_[x]), 'label: '+str(x)+' number of ocurrences: '+str(map[x])))
 
-    fig = plt.figure()
-    ax = Axes3D(fig)
-    x = X_pca[:,0]
-    y = X_pca[:,1]
-    z = X_pca[:,2]
-    # plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], km.cluster_centers_[:,2], c='red',s=50)# Analyze why this fails
-    ax.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], km.cluster_centers_[:,2], c='red',s=50)
-    ax.scatter(x,y,z, c = labels)
-    
-    plt.show()
-    print(km.cluster_centers_)
+    if (bidimensional):
+        plt.xlabel('Pitch')
+        plt.ylabel('Roll')
+        x = X_pca[:,0]
+        y = X_pca[:,1]
+        plt.scatter(x,y, c = labels)
+        # plotting centroids
+        plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], c='red',s=50)
+        plt.show()
+    else:
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        x = X_pca[:,0]
+        y = X_pca[:,1]
+        z = X_pca[:,2]
+        # plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], km.cluster_centers_[:,2], c='red',s=50)# 
+        ax.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:,1], km.cluster_centers_[:,2], c='red',s=50)
+        ax.scatter(x,y,z, c = labels)
+        plt.show()
 
+#Hierarchical clusteing method
 def HRC(df, original):
     from sklearn import preprocessing 
     min_max_scaler = preprocessing.MinMaxScaler()
@@ -126,14 +139,14 @@ def HRC(df, original):
     # 3.2. Building the Dendrogram	
     from scipy import cluster
     # method linkage: simple, ward, complete
-    clusters = cluster.hierarchy.linkage(matsim, method = 'complete')
+    clusters = cluster.hierarchy.linkage(matsim, method = 'ward')
     # http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.hierarchy.dendrogram.html
     # color_threshold a 16 para coger 10 clusters en OrientacionMEAN .4
     # color_threshold a 18 para coger 7 clusters en OrientacionMEAN .4
     # color_threshold a 10 para coger 7 clusters en OrientacionMEAN .4 X_PCA
-    cluster.hierarchy.dendrogram(clusters, color_threshold=18)
+    cluster.hierarchy.dendrogram(clusters, color_threshold=16)
     plt.show()
-    cut = 18 # !!!! ad-hoc
+    cut = 16 # !!!! ad-hoc
     labels = cluster.hierarchy.fcluster(clusters, cut , criterion = 'distance')
     print ('Number of clusters %d' % (len(set(labels))))
     print (labels)
@@ -188,7 +201,7 @@ def HRC(df, original):
     print("\nOriginal data means by group")
     print(original.groupby(labels).mean())
 
-#--------------------DATA FILTER METHOD---------------------#
+# Data filtering method
 def cleanData(df):
     #0 . Load the data 
     # read the csv
@@ -246,9 +259,10 @@ def cleanData(df):
     df2daysf=df2daysf[::4]
     #we could also trim with the mean
     print(df2daysf.shape)
-    df2daysf.to_csv("T2_clean.csv",mode = 'w', index=False)
+    # df2daysf.to_csv("T2_clean.csv",mode = 'w', index=False)
     return df2daysf
 
+#Simple plotting method with labels
 def plotData3D(df):
     fig = plt.figure()
     ax = Axes3D(fig)
@@ -269,6 +283,10 @@ def main():
     #0 . Load the data 
     # read the csv
     df = pd.read_csv("T2_clean.csv")
+    # df = pd.read_csv("T2_2days.csv")
+
+    #If we wnat to drop first column [Azimut] for different analysis
+    df = df.drop(df.columns[0], axis=1)
     # list the columns
     list(df)
 
@@ -283,19 +301,21 @@ def main():
     #PCA
     # X_pca = transformPCA(df, 3)
 
-    #Rango Kmeans para Silhouetter y Distorsion
-    # Krange(X_pca)
+    #Silhouette and Distorsion
+    # Krange(df)
 
     #KMeans - best k for OrientationMEAN 7 or 10
-    #Kmeans(Dataframe, 
+    #Kmeans(
+    #       Dataframe, 
     #       Number of clusters, 
     #       If the dataframe comes from PCA,
-    #       If normalizing is needed )
-    Kmeans(df, 7, False, False)
+    #       If normalizing is needed,
+    #       If the df is bidimesional)
+    Kmeans(df, 11, False, False, True)
 
     #Hierarchical
     #HRC(Dataframe to use PCA or not, Original df to represent labels on)
-    HRC(df, df)
+    # HRC(df, df)
 
 if __name__ == "__main__":
      main()
