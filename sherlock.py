@@ -97,13 +97,13 @@ def Kmeans(X_pca, k, isPCA=True, normalize=True, bidimensional=False):
     print ("Silhouette Score:\n"+str(metrics.silhouette_score(X_pca, labels)))
 
     print("\nCentroids with number of ocurrences:")
-    for x in range(0,np.size(km.cluster_centers_,0)-1):
+    for x in range(0,np.size(km.cluster_centers_,0)):
         # print(str(km.cluster_centers_[x])+'\t\tlabel: '+str(x)+' number of ocurrences: '+str(map[x]))
         print('{:<40s} {:<30s}'.format(str(km.cluster_centers_[x]), 'label: '+str(x)+' number of ocurrences: '+str(map[x])))
 
     if (bidimensional):
-        plt.xlabel('Pitch')
-        plt.ylabel('Roll')
+        plt.xlabel('Roll')
+        plt.ylabel('Pitch')
         x = X_pca[:,0]
         y = X_pca[:,1]
         plt.scatter(x,y, c = labels)
@@ -198,7 +198,7 @@ def HRC(df, original):
     for i in range(len(original)):
         plt.text(original[i][0], original[i][1], 'x', color=colors[labels[i]]) 
     #Back to dataframe to print group means
-    original = pd.DataFrame({'Azimut': original[:, 0], 'Pitch': original[:, 1], 'Roll': original[:, 2]})
+    original = pd.DataFrame({'Azimut': original[:, 0], 'Roll': original[:, 1], 'Pitch': original[:, 2]})
     print("\nOriginal data means by group")
     print(original.groupby(labels).mean())
 
