@@ -122,13 +122,13 @@ def Kmeans(X_pca, k, isPCA=True, normalize=True, bidimensional=False):
         plt.show()
 
 #Hierarchical clusteing method
-def HRC(df, original):
+def HRC(df, original, components):
     from sklearn import preprocessing 
     min_max_scaler = preprocessing.MinMaxScaler()
     datanorm = min_max_scaler.fit_transform(df)
 
     from sklearn.decomposition import PCA
-    estimator = PCA (n_components = 3)
+    estimator = PCA (n_components = components)
     X_pca = estimator.fit_transform(datanorm)
 
     #3. Hierarchical Clustering
@@ -140,14 +140,14 @@ def HRC(df, original):
     # 3.2. Building the Dendrogram	
     from scipy import cluster
     # method linkage: simple, ward, complete
-    clusters = cluster.hierarchy.linkage(matsim, method = 'ward')
+    clusters = cluster.hierarchy.linkage(matsim, method = 'complete')
     # http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.hierarchy.dendrogram.html
     # color_threshold a 16 para coger 10 clusters en OrientacionMEAN .4
     # color_threshold a 18 para coger 7 clusters en OrientacionMEAN .4
     # color_threshold a 10 para coger 7 clusters en OrientacionMEAN .4 X_PCA
-    cluster.hierarchy.dendrogram(clusters, color_threshold=16)
+    cluster.hierarchy.dendrogram(clusters, color_threshold=11)
     plt.show()
-    cut = 16 # !!!! ad-hoc
+    cut = 11 # !!!! ad-hoc
     labels = cluster.hierarchy.fcluster(clusters, cut , criterion = 'distance')
     print ('Number of clusters %d' % (len(set(labels))))
     print (labels)
@@ -167,30 +167,36 @@ def HRC(df, original):
     plt.show()
 
     #3D Plot
-    fig = plt.figure()
-    ax = Axes3D(fig)
-    x = X_pca[:,0]
-    y = X_pca[:,1]
-    z = X_pca[:,2]
-    ax.scatter(x,y,z, c = labels)
-    plt.show()
+    if (components==3):
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        x = X_pca[:,0]
+        y = X_pca[:,1]
+        z = X_pca[:,2]
+        ax.scatter(x,y,z, c = labels)
+        plt.show()
 
     #np array to dataframe
-    data = pd.DataFrame({'Column1': X_pca[:, 0], 'Column2': X_pca[:, 1], 'Column3': X_pca[:, 2]})
+    if (components==3):
+        data = pd.DataFrame({'Column1': X_pca[:, 0], 'Column2': X_pca[:, 1], 'Column3': X_pca[:, 2]})
+    elif (components==2):
+         data = pd.DataFrame({'Column1': X_pca[:, 0], 'Column2': X_pca[:, 1]})
     #Mean data by group
     print("\nNormalized data means by group")
     print(data.groupby(labels).mean())
 
     #Plot with original data and labeled
-    fig = plt.figure()
-    ax = Axes3D(fig)
+    
     x = original.iloc[:,0]
     y = original.iloc[:,1]
-    z = original.iloc[:,2]
-    ax.set_xlabel("azimut")
-    ax.set_ylabel("pitch")
-    ax.set_zlabel("roll")
-    ax.scatter(x,y,z, c = labels)
+    
+    if (components==3):
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        z = original.iloc[:,2]
+        ax.scatter(x,y,z, c = labels)
+    elif (components==2):
+        plt.scatter(x,y, c = labels, cmap="Set1")
     plt.show()
 
     #Dataframe to np to pass labels
@@ -198,7 +204,11 @@ def HRC(df, original):
     for i in range(len(original)):
         plt.text(original[i][0], original[i][1], 'x', color=colors[labels[i]]) 
     #Back to dataframe to print group means
-    original = pd.DataFrame({'Azimut': original[:, 0], 'Roll': original[:, 1], 'Pitch': original[:, 2]})
+    if (components == 3):
+        original = pd.DataFrame({'Azimut': original[:, 0], 'Roll': original[:, 1], 'Pitch': original[:, 2]})
+    elif (components == 2):
+        original = pd.DataFrame({'Roll': original[:, 0], 'Pitch': original[:, 1],})
+    
     print("\nOriginal data means by group")
     print(original.groupby(labels).mean())
 
@@ -409,14 +419,17 @@ def main():
     # Kmeans(df, 11, False, False, True)
 
     #Hierarchical
-    #HRC(Dataframe to use PCA or not, Original df to represent labels on)
-    # HRC(df, df)
+    #HRC(
+    #   Dataframe to use PCA or not,
+    #   Original df to represent labels on,
+    #   number of components)
+    HRC(df, df, 2)
 
     #DBSCAN
     # DBScan(df, True)
 
     #Outlier Detection
-    outliers(df.to_numpy())
+    # outliers(df.to_numpy())
 
 if __name__ == "__main__":
      main()
