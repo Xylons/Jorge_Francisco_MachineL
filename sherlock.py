@@ -7,8 +7,9 @@ from sklearn import metrics
 from sklearn.decomposition import PCA
 from sklearn import preprocessing 
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 import collections
+
 
 iterations = 10
 max_iter = 300 
@@ -96,7 +97,7 @@ def Kmeans(X_pca, k, isPCA=True, normalize=True, bidimensional=False):
     print ("Silhouette Score:\n"+str(metrics.silhouette_score(X_pca, labels)))
 
     print("\nCentroids with number of ocurrences:")
-    for x in range(0,numpy.size(km.cluster_centers_,0)-1):
+    for x in range(0,np.size(km.cluster_centers_,0)-1):
         # print(str(km.cluster_centers_[x])+'\t\tlabel: '+str(x)+' number of ocurrences: '+str(map[x]))
         print('{:<40s} {:<30s}'.format(str(km.cluster_centers_[x]), 'label: '+str(x)+' number of ocurrences: '+str(map[x])))
 
@@ -151,8 +152,8 @@ def HRC(df, original):
     print ('Number of clusters %d' % (len(set(labels))))
     print (labels)
 
-    colors = numpy.array([x for x in 'bgrcmykbgrcmykbgrcmykbgrcmyk'])
-    colors = numpy.hstack([colors] * 20)
+    colors = np.array([x for x in 'bgrcmykbgrcmykbgrcmykbgrcmyk'])
+    colors = np.hstack([colors] * 20)
 
     fig, ax = plt.subplots()
     plt.xlim(-1, 1.5)
@@ -174,7 +175,7 @@ def HRC(df, original):
     ax.scatter(x,y,z, c = labels)
     plt.show()
 
-    #Numpy array to dataframe
+    #np array to dataframe
     data = pd.DataFrame({'Column1': X_pca[:, 0], 'Column2': X_pca[:, 1], 'Column3': X_pca[:, 2]})
     #Mean data by group
     print("\nNormalized data means by group")
@@ -192,7 +193,7 @@ def HRC(df, original):
     ax.scatter(x,y,z, c = labels)
     plt.show()
 
-    #Dataframe to numpy to pass labels
+    #Dataframe to np to pass labels
     original = original.to_numpy()
     for i in range(len(original)):
         plt.text(original[i][0], original[i][1], 'x', color=colors[labels[i]]) 
@@ -275,6 +276,76 @@ def plotData3D(df):
     ax.set_zlabel("roll")
     plt.show()
 
+def DBScan(df, bidimiensional=True):
+    X = df.to_numpy()
+
+    # 1. Setting Parameters
+    # 1.1 Compute the similarity/distance matrix (high cost)
+    import sklearn.neighbors
+    dist = sklearn.neighbors.DistanceMetric.get_metric('manhattan')
+    matsim = dist.pairwise(X)
+    # 1.2 Compute the k-nearest neighboors
+    minPts=7 # ln(2000) ~= 7,6
+    from sklearn.neighbors import kneighbors_graph
+    A = kneighbors_graph(X, minPts, include_self=False)
+    Ar = A.toarray()
+
+    seq = []
+    for i,s in enumerate(X):
+        for j in range(len(X)):
+            if Ar[i][j] != 0:
+                seq.append(matsim[i][j])
+                
+    seq.sort()
+    plt.plot(seq)
+    plt.show()
+
+    # 2. DBSCAN execution
+    from sklearn.cluster import DBSCAN
+    import numpy
+
+    #Analyze range to find best eps
+    for eps in numpy.arange(2, 30, 2):
+        db = DBSCAN(eps, min_samples=minPts).fit(X)
+        core_samples_mask = numpy.zeros_like(db.labels_, dtype=bool)
+        core_samples_mask[db.core_sample_indices_] = True
+        labels = db.labels_
+        n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+        n_outliers = list(labels).count(-1)
+        print ("%6.2f, %d, %d" % (eps, n_clusters_, n_outliers))
+
+    # how are chosen eps and minpts??
+    db = DBSCAN(eps=8, min_samples=minPts, metric='manhattan')
+    y_db = db.fit_predict(X)
+
+    #3. Validation/Evaluation
+    # Only using silhouette coefficient
+    from sklearn import metrics
+    print("Silhouette Coefficient: %0.3f"
+        % metrics.silhouette_score(X, y_db))
+            
+    # 4. Plot results
+    labels = db.labels_
+    if (bidimiensional):
+        plt.scatter(X[:,0], X[:,1], c=labels,s=50, cmap="Set1")
+    else:
+        fig = plt.figure()
+        ax = Axes3D(fig)        
+        ax.scatter(X[:,0], X[:,1], X[:,2], c=labels,s=50, cmap="Set1")
+    plt.show()
+
+    # anottation
+    fig = plt.figure()
+    ax = Axes3D(fig) 
+    print("\nList of outliers:")
+    for i in range(0,len(X)):
+        if labels[i] == -1: 
+            print(df.iloc[i].values)
+            # ax.annotate(df.iloc[i,:].name[0:3], (df[i,0], df[i,1]))
+
+    # df['dbscan_group'] = labels
+    # print(df[df['dbscan_group'] == -1])
+
 
 ###########################################################
 
@@ -311,11 +382,14 @@ def main():
     #       If the dataframe comes from PCA,
     #       If normalizing is needed,
     #       If the df is bidimesional)
-    Kmeans(df, 11, False, False, True)
+    # Kmeans(df, 11, False, False, True)
 
     #Hierarchical
     #HRC(Dataframe to use PCA or not, Original df to represent labels on)
     # HRC(df, df)
+
+    #DBSCAN
+    DBScan(df, True)
 
 if __name__ == "__main__":
      main()
