@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
-from mpl_toolkits.mplot3d import Axes3D  
-from sklearn.cluster import KMeans
-from sklearn import metrics 
-from sklearn.decomposition import PCA
-from sklearn import preprocessing 
-import matplotlib.pyplot as plt
-import numpy as np
-import collections
+# Machine Learning Techniques
+# Unsupervised learning
 
-
-iterations = 10
-max_iter = 300 
-tol = 1e-04 
-random_state = 0
-init = "random"
 
 #--------------------FUNCTIONS---------------------#
 
-#PCA analysis method
 def transformPCA(df, n):
+    """ 
+        PCA analysis method
+        Returns dataset with PCA
+        df = dataset
+        n = number of components
+    """
+    from sklearn import preprocessing 
+    from sklearn.decomposition import PCA
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+
     # 2. Principal Component Analysis
     #2.1 Scalation
     
@@ -56,9 +53,20 @@ def transformPCA(df, n):
     
     return X_pca
 
-#Silhouette and Distorsion method
 def Krange(X_pca):
+    """ 
+        Silhouette and Distorsion method
+        X_pca = dataset with PCA
+    """
+    from sklearn.cluster import KMeans
+    from sklearn import metrics
+    import matplotlib.pyplot as plt
 
+    iterations = 10
+    max_iter = 300 
+    tol = 1e-04 
+    random_state = 0
+    init = "random"
     distortions = []
     silhouettes = []
 
@@ -80,8 +88,29 @@ def Krange(X_pca):
     plt.ylabel('Silhouette')
     plt.show()
 
-#Kmeans clustering method
 def Kmeans(X_pca, k, isPCA=True, normalize=True, bidimensional=False):
+    """ 
+        Kmeans clustering method
+        X_pca = dataset with PCA
+        k = number of clusters
+        isPCA = if the dataset comes from PCA
+        normalize = if normalizing is needed
+        bidimensional = if the dataset has only 2 variables
+    """
+
+    from mpl_toolkits.mplot3d import Axes3D  
+    from sklearn.cluster import KMeans
+    from sklearn import preprocessing 
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import collections
+
+    iterations = 10
+    max_iter = 300 
+    tol = 1e-04 
+    random_state = 0
+    init = "random"
+
     if(not isPCA):
         X_pca = X_pca.to_numpy()
     if(normalize):
@@ -121,8 +150,19 @@ def Kmeans(X_pca, k, isPCA=True, normalize=True, bidimensional=False):
         ax.scatter(x,y,z, c = labels)
         plt.show()
 
-#Hierarchical clusteing method
 def HRC(df, original, components):
+    """ 
+        Hierarchical clusteing method
+        df = dataset to work on 
+        original = original dataset to compare later with labels
+        componenets = number of attributes
+    """
+
+    import pandas as pd
+    from mpl_toolkits.mplot3d import Axes3D  
+    import matplotlib.pyplot as plt
+    import numpy as np
+
     from sklearn import preprocessing 
     min_max_scaler = preprocessing.MinMaxScaler()
     datanorm = min_max_scaler.fit_transform(df)
@@ -212,8 +252,15 @@ def HRC(df, original, components):
     print("\nOriginal data means by group")
     print(original.groupby(labels).mean())
 
-# Data filtering method
 def cleanData(df):
+    """ 
+        Data filtering method
+        Returns filtered dataset
+        df = dataset to filter
+    """
+
+    import pandas as pd
+
     #0 . Load the data 
     # read the csv
     # df = pd.read_csv("T2.csv")
@@ -273,8 +320,15 @@ def cleanData(df):
     # df2daysf.to_csv("T2_clean.csv",mode = 'w', index=False)
     return df2daysf
 
-#Simple plotting method with labels
 def plotData3D(df):
+    """ 
+        Simple plotting method with labels
+        df = dataset to plot
+    """
+
+    from mpl_toolkits.mplot3d import Axes3D  
+    import matplotlib.pyplot as plt
+
     fig = plt.figure()
     ax = Axes3D(fig)
     x = df.iloc[:,0]
@@ -287,6 +341,15 @@ def plotData3D(df):
     plt.show()
 
 def DBScan(df, bidimiensional=True):
+    """ 
+        DBScan clustering algorithm
+        df = dataset to work with
+        bidimiensional = if the dataset has 2 columns
+    """
+
+    from mpl_toolkits.mplot3d import Axes3D  
+    import matplotlib.pyplot as plt
+
     X = df.to_numpy()
 
     # 1. Setting Parameters
@@ -351,6 +414,11 @@ def DBScan(df, bidimiensional=True):
     #         print(df.iloc[i].values)
 
 def outliers(X):
+    """ 
+        LOC algorithm to find outliers
+        X = dataset 
+    """
+
     import numpy as np
     import matplotlib.pyplot as plt
     from sklearn.neighbors import LocalOutlierFactor
@@ -385,6 +453,11 @@ def outliers(X):
 
 
 def main():
+    """ 
+        Test main to launch the function that we want
+    """
+    import pandas as pd
+
     #0 . Load the data 
     # read the csv
     df = pd.read_csv("T2_clean.csv")
