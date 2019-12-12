@@ -1,11 +1,23 @@
 # 0. load data in DataFrame
+from sklearn.utils.multiclass import unique_labels
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
+from matplotlib.colors import ListedColormap
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import KFold
+from sklearn import neighbors
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 import pandas as pd
 
-target_list = np.array(['attack', 'no attack'])
-df = pd.read_csv('task3_dataset.csv')
-df = df.drop(df.columns[[0,1,2,3]], axis = 1)
+
+target_list = np.array(['no attack', 'attack'])
+df = pd.read_csv('task3_dataset.csv') #24519 values
+df = df.drop(df.columns[[0, 1, 2, 3]], axis=1)
 # df=df.to_numpy()
+
 
 # df_iris = pd.DataFrame(data= np.c_[iris['data'], iris['target']],
 #                      columns= iris['feature_names'] + ['target'])
@@ -16,121 +28,123 @@ df.attack = df.attack.astype(int)
 # df_iris.head()
 print(df.head())
 
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 sns.set()
 sns.heatmap(df.corr(), square=True, annot=True)
-# Magnetic Fields with least relation: MagneticField_x_MEAN | MagneticField_COV_z_y 
-plt.show() 
+# Magnetic Fields with least relation: MagneticField_x_MEAN | MagneticField_COV_z_y
+plt.show()
 
-from sklearn.model_selection import train_test_split
 
 # train, test = train_test_split(df_iris[['petal length (cm)','petal width (cm)', 'target']], test_size=0.4)
 
 # Se realiza la separacion de datos previo Shuffle por lo que el modelo cambia cada ejecucion
 # Ver mejor alternativa de separacion
 # 38 Casos de ataques positivos: Filas 24482-24519
-df1 = df[df['attack'] == 0]
-df2 = df[df['attack'] == 1]
 
+# df=df[::200]
+# print(df.shape)
 
-train, test = train_test_split(df[['MagneticField_x_MEAN','MagneticField_COV_z_y', 'attack']], test_size=0.4)
+# # Split data into Attacks and no Attacks
+# dfNoAttack = df[df['attack'] == 0]
+# dfAttack = df[df['attack'] == 1]
+
+# # Get the train/test split for each case
+# trainNoAttack, testNoAttack = train_test_split(
+#     dfNoAttack[['MagneticField_x_MEAN', 'MagneticField_COV_z_y', 'attack']], test_size=0.4, shuffle=False)
+# trainAttack, testAttack = train_test_split(
+#     dfAttack[['MagneticField_x_MEAN', 'MagneticField_COV_z_y', 'attack']], test_size=0.4, shuffle=False)
+
+# # Prepare data to get merged into final train/test sets
+# frameTrain = [trainNoAttack, trainAttack]
+# frameTest = [testNoAttack, testAttack]
+# train = pd.concat(frameTrain)
+# test = pd.concat(frameTest)
+
+train, test = train_test_split(df[['MagneticField_x_MEAN','MagneticField_COV_z_y', 'attack']], test_size=0.4, random_state=20)
 print(type(train))
-train.reset_index(inplace = True)
-test.reset_index(inplace = True)
+train.reset_index(inplace=True)
+test.reset_index(inplace=True)
 # print(test.to_string())
 
-from sklearn import neighbors
-from sklearn.model_selection import KFold
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
-import numpy as np
 
-cv = KFold(n_splits = 5, shuffle = True) # shuffle = False si hay dimensión temporal 
+# shuffle = False si hay dimensión temporal
+cv = KFold(n_splits=5, shuffle=False)
 
 for i, weights in enumerate(['uniform', 'distance']):
-   total_scores = []
-   for n_neighbors in range(1,30):
-       fold_accuracy = []
-       knn = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
-       for train_fold, test_fold in cv.split(train):
-          # División train test aleatoria
-          f_train = train.loc[train_fold]
-          f_test = train.loc[test_fold]
-          # entrenamiento y ejecución del modelo
-          knn.fit( X = f_train.drop(['attack'], axis=1), 
-                               y = f_train['attack'])
-          y_pred = knn.predict(X = f_test.drop(['attack'], axis = 1))
-          # evaluación del modelo
-          acc = accuracy_score(f_test['attack'], y_pred)
-          fold_accuracy.append(acc)
-       total_scores.append(sum(fold_accuracy)/len(fold_accuracy))
-   
-   plt.plot(range(1,len(total_scores)+1), total_scores, 
+    total_scores = []
+    for n_neighbors in range(1, 30):
+        fold_accuracy = []
+        knn = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
+        for train_fold, test_fold in cv.split(train):
+            # División train test aleatoria
+            f_train = train.loc[train_fold]
+            f_test = train.loc[test_fold]
+            # entrenamiento y ejecución del modelo
+            knn.fit(X=f_train.drop(['attack'], axis=1),
+                    y=f_train['attack'])
+            y_pred = knn.predict(X=f_test.drop(['attack'], axis=1))
+            # evaluación del modelo
+            acc = accuracy_score(f_test['attack'], y_pred)
+            fold_accuracy.append(acc)
+        total_scores.append(sum(fold_accuracy)/len(fold_accuracy))
+
+    plt.plot(range(1, len(total_scores)+1), total_scores,
              marker='o', label=weights)
-   print ('Max Value ' +  weights + " : " +  str(max(total_scores)) +" (" + str(np.argmax(total_scores) + 1) + ")")
-   plt.ylabel('Acc')      
-    
+    print('Max Value ' + weights + " : " + str(max(total_scores)) +
+          " (" + str(np.argmax(total_scores) + 1) + ")")
+    plt.ylabel('Acc')
+
 
 plt.legend()
-plt.show() 
+plt.show()
 
 # constructor
-n_neighbors = 29
+n_neighbors = 4
 weights = 'uniform'
-knn = neighbors.KNeighborsClassifier(n_neighbors= n_neighbors, weights=weights) 
+knn = neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights)
 # fit and predict
-knn.fit(X = train[['MagneticField_x_MEAN','MagneticField_COV_z_y']], y = train['attack'])
-y_pred = knn.predict(X = test[['MagneticField_x_MEAN','MagneticField_COV_z_y']])
+knn.fit(X=train[['MagneticField_x_MEAN',
+                 'MagneticField_COV_z_y']], y=train['attack'])
+y_pred = knn.predict(X=test[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']])
 acc = accuracy_score(test['attack'], y_pred)
-print ('Acc', acc)
+print('Acc', acc)
 
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 cmap_light = ListedColormap(['#FFAAAA', '#AAFFAA', '#AAAAFF'])
 cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
 h = .05  # step size in the mesh
 
 
-X = train[['MagneticField_x_MEAN','MagneticField_COV_z_y']].as_matrix()
+X = train[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']].as_matrix()
 y = train['attack'].as_matrix()
 
 # Plot the decision boundary. For that, we will assign a color to each
 # point in the mesh [x_min, x_max]x[y_min, y_max].
 
 # Opcion para reducr el tamaño -> Feature Scaling | meshgrid: sparse=True, copy=False
-from sklearn.preprocessing import StandardScaler
-st = StandardScaler()
-print(X)
-X = st.fit_transform(X)
-# y = st.fit_transform(y)
-print(X)
+# st = StandardScaler()
+# X = st.fit_transform(X)
 
-x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-                       np.arange(y_min, y_max, h),
-                       copy=False)
-Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
+# x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+# y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+# xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+#                      np.arange(y_min, y_max, h))
+# Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
 
-# Put the result into a color plot
-Z = Z.reshape(xx.shape)
-plt.figure()
-plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
+# # Put the result into a color plot
+# Z = Z.reshape(xx.shape)
+# plt.figure()
+# plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
 
-# Plot also the training points
-plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold,
-             edgecolor='k', s=20)
-plt.xlim(xx.min(), xx.max())
-plt.ylim(yy.min(), yy.max())
-plt.title("Classification (k = %i, weights = '%s')"
-              % (n_neighbors, weights))
+# # Plot also the training points
+# plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold,
+#             edgecolor='k', s=20)
+# plt.xlim(xx.min(), xx.max())
+# plt.ylim(yy.min(), yy.max())
+# plt.title("Classification (k = %i, weights = '%s')"
+#           % (n_neighbors, weights))
 
-plt.show()
+# plt.show()
 
-from sklearn.metrics import confusion_matrix
-from sklearn.utils.multiclass import unique_labels
 
 def plot_confusion_matrix(y_true, y_pred, classes,
                           normalize=False,
@@ -184,6 +198,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,
                     color="white" if cm[i, j] > thresh else "black")
     fig.tight_layout()
     return ax
+
 
 plot_confusion_matrix(test['attack'], y_pred, classes=target_list, normalize=True,
                       title='Normalized confusion matrix')
