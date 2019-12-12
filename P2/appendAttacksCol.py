@@ -13,6 +13,10 @@ import pandas as pd
 # df.to_csv('./Centroids/centroids5000.csv', index=False)
 
 # Trim data
-df = pd.read_csv('./task3_dataset_noattacks.csv')
-df=df[::4]
-df.to_csv('./NoAttacksDownSampling/task3_dataset_noattacks_DividoEntre4.csv', index=False)
+# df = pd.read_csv('./task3_dataset_noattacks.csv')
+# df=df[::4]
+# df.to_csv('./NoAttacksDownSampling/task3_dataset_noattacks_DividoEntre4.csv', index=False)
+
+df = pd.read_csv('./IntermediateCsv/fullAttacks.csv') 
+df = df.drop(['UserID','UUID','Version','TimeStemp'], axis=1)
+df.to_csv('./IntermediateCsv/fullAttacksNoUUID.csv', index=False)
