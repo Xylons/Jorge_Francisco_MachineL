@@ -1,7 +1,13 @@
 import pandas as pd
 
-spy = pd.read_csv('new_task3_dataset.csv')
-spy = spy.drop(spy.columns[[0, 1, 2, 3]], axis=1)
+# If using centroids Dataset
+spy = pd.read_csv('./FullSets/C1K+Attacks.csv')
+
+# If using cut down Dataset
+# spy = pd.read_csv('./FullSets/D2+Attacks.csv')
+# spy = spy.drop(spy.columns[[0, 1, 2, 3]], axis=1)
+
+spy = spy.sample(frac=1)
 
 p_train = 0.80 
 train = spy[:int((len(spy))*p_train)]
@@ -10,7 +16,7 @@ test = spy[int((len(spy))*p_train):]
 print("Training samples ", len(train))
 print("Test Samples: ", len(test))
 
-features = spy.columns[1:]
+features = spy.columns.difference(['attack'])
 x_train = train[features]
 y_train = train['attack']
 
@@ -27,7 +33,7 @@ from sklearn.ensemble import RandomForestClassifier
 # clf = RandomForestClassifier(n_estimators=512, n_jobs=-1)
 
 # param_dist = {"max_features": ['auto', 'sqrt'], # Number of features to consider at every split
-#               "max_depth": [10,9,8,7,6,5,4,3,2,None], # Maximum number of levels in tree
+#               "max_depth": [7,6,5,4,3,2,None], # Maximum number of levels in tree
 #               "min_samples_split": sp_randint(2, 50), #  Minimum number of samples required to split a node
 #               "min_samples_leaf": sp_randint(1, 50), # Minimum number of samples required at each leaf node
 #               "bootstrap": [True, False], # Method of selecting samples for training each tree
@@ -53,8 +59,8 @@ from sklearn.ensemble import RandomForestClassifier
 # report(random_search.cv_results_)
 
 clf_rf = RandomForestClassifier(n_estimators = 512, criterion = 'entropy', 
-                                max_depth=6, max_features = 'sqrt', 
-                                min_samples_leaf = 49, min_samples_split = 11,
+                                max_depth=None, max_features = 'auto', 
+                                min_samples_leaf = 3, min_samples_split = 4,
                                 bootstrap=True, n_jobs=-1, 
                                 class_weight=None)
 
@@ -69,7 +75,7 @@ print("Random Forest: \n"
 
 # Confussion Matrix
 
-print("Confussion Matrixn:\n")
+print("Confussion Matrix:\n")
 matriz = pd.crosstab(test['attack'], preds_rf, rownames=['actual'], colnames=['preds'])
 print(matriz)
 

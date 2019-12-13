@@ -14,7 +14,9 @@ import pandas as pd
 
 
 target_list = np.array(['no attack', 'attack'])
-df = pd.read_csv('task3_dataset.csv') #24519 values
+#Original = 24519 values
+# df = pd.read_csv('./FullSets/C10K+Attacks.csv') 
+df = pd.read_csv('./FullSets/D4+Attacks.csv') 
 df = df.drop(df.columns[[0, 1, 2, 3]], axis=1)
 # df=df.to_numpy()
 
