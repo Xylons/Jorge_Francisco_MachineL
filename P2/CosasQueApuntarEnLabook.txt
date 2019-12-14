@@ -1,0 +1,6 @@
+Se ha hecho Down/Upsampling de los datos para obtener un dataset mas balanceado:
+En los NO ataques: Muestreo reducido de los datos 2/4/8 y Clustering para usar centroides 1K/5K/10K
+En los ataques: Se van a coger los 10 casos anteriores y los 10 posteriores de los ataques
+
+Se han realizado pruebas con los 6 Datasets final, realizando la busqueda del mejor modelo.
+Datos almacenados en ResultadosRandomForest.txt

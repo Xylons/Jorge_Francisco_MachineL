@@ -7,7 +7,7 @@ spy = pd.read_csv('./FullSets/C1K+Attacks.csv')
 # spy = pd.read_csv('./FullSets/D2+Attacks.csv')
 # spy = spy.drop(spy.columns[[0, 1, 2, 3]], axis=1)
 
-spy = spy.sample(frac=1)
+spy = spy.sample(frac=1) # Shuffle data
 
 p_train = 0.80 
 train = spy[:int((len(spy))*p_train)]

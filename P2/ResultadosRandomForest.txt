@@ -1,0 +1,308 @@
+Se esta haciendo un shuffle antes de dividir entre test y training  por lo que los resultados varian en ejecucion.
+Nos quedamos con el modelo que mas ataques predija
+
+    C10K+Attacks.csv:
+
+Model with rank: 1
+Mean validation score: 0.957 (std: 0.002)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 10, 'max_features': 'auto', 'min_samples_leaf': 3, 'min_samples_split': 13}
+
+Model with rank: 2
+Mean validation score: 0.955 (std: 0.001)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': 10, 'max_features': 'auto', 'min_samples_leaf': 8, 'min_samples_split': 18}
+
+Model with rank: 3
+Mean validation score: 0.954 (std: 0.001)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 9, 'max_features': 'auto', 'min_samples_leaf': 6, 'min_samples_split': 11}
+
+-Best Model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98      1999
+           1       0.92      0.43      0.59       161
+
+    accuracy                           0.96      2160
+   macro avg       0.94      0.72      0.78      2160
+weighted avg       0.95      0.96      0.95      2160
+
+Confussion Matrix:
+
+preds      0   1
+actual          
+0       1993   6
+1         91  70
+Feature Relevance:
+
+                       Feature  Relevancy
+0        GyroscopeStat_COV_z_x   0.084436
+1        GyroscopeStat_COV_z_y   0.096145
+2         GyroscopeStat_x_MEAN   0.064464
+3         GyroscopeStat_z_MEAN   0.066329
+4   LinearAcceleration_COV_z_x   0.093401
+5   LinearAcceleration_COV_z_y   0.056693
+6    LinearAcceleration_x_MEAN   0.050830
+7    LinearAcceleration_z_MEAN   0.060939
+8        MagneticField_COV_z_x   0.045912
+9        MagneticField_COV_z_y   0.045434
+10        MagneticField_x_MEAN   0.102662
+11        MagneticField_z_MEAN   0.112573
+12               Pressure_MEAN   0.120181 
+
+Maximum relevance RF : 0.12018115260531584
+
+    C5K+Attacks.csv:
+
+Model with rank: 1
+Mean validation score: 0.937 (std: 0.004)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 8, 'min_samples_split': 3}
+
+Model with rank: 2
+Mean validation score: 0.929 (std: 0.004)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': None, 'max_features': 'auto', 'min_samples_leaf': 6, 'min_samples_split': 34}
+
+Model with rank: 3
+Mean validation score: 0.928 (std: 0.004)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': 9, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 9}
+
+-Best Model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.94      0.99      0.97      1000
+           1       0.95      0.60      0.74       160
+
+    accuracy                           0.94      1160
+   macro avg       0.95      0.80      0.85      1160
+weighted avg       0.94      0.94      0.93      1160
+
+Confussion Matrix:
+
+preds     0   1
+actual         
+0       995   5
+1        64  96
+Feature Relevance:
+
+                       Feature  Relevancy
+0        GyroscopeStat_COV_z_x   0.091474
+1        GyroscopeStat_COV_z_y   0.073506
+2         GyroscopeStat_x_MEAN   0.060259
+3         GyroscopeStat_z_MEAN   0.064704
+4   LinearAcceleration_COV_z_x   0.091020
+5   LinearAcceleration_COV_z_y   0.069988
+6    LinearAcceleration_x_MEAN   0.060846
+7    LinearAcceleration_z_MEAN   0.072522
+8        MagneticField_COV_z_x   0.050702
+9        MagneticField_COV_z_y   0.040145
+10        MagneticField_x_MEAN   0.088446
+11        MagneticField_z_MEAN   0.121321
+12               Pressure_MEAN   0.115067 
+
+Maximum relevance RF : 0.12132073568382937 
+
+    C1K+Attacks.csv:
+
+Model with rank: 1
+Mean validation score: 0.887 (std: 0.002)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2}
+
+Model with rank: 2
+Mean validation score: 0.880 (std: 0.005)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 5, 'min_samples_split': 6}
+
+Model with rank: 3
+Mean validation score: 0.863 (std: 0.008)
+Parameters: {'bootstrap': True, 'criterion': 'entropy', 'max_depth': None, 'max_features': 'auto', 'min_samples_leaf': 7, 'min_samples_split': 16}
+
+-Best model = 2
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.92      0.90      0.91       200
+           1       0.87      0.91      0.89       160
+
+    accuracy                           0.90       360
+   macro avg       0.90      0.90      0.90       360
+weighted avg       0.90      0.90      0.90       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       179   21
+1        15  145
+Feature Relevance:
+
+                       Feature  Relevancy
+0        GyroscopeStat_COV_z_x   0.062548
+1        GyroscopeStat_COV_z_y   0.082764
+2         GyroscopeStat_x_MEAN   0.101205
+3         GyroscopeStat_z_MEAN   0.063499
+4   LinearAcceleration_COV_z_x   0.053992
+5   LinearAcceleration_COV_z_y   0.059895
+6    LinearAcceleration_x_MEAN   0.063062
+7    LinearAcceleration_z_MEAN   0.110702
+8        MagneticField_COV_z_x   0.049702
+9        MagneticField_COV_z_y   0.048288
+10        MagneticField_x_MEAN   0.077163
+11        MagneticField_z_MEAN   0.129323
+12               Pressure_MEAN   0.097859 
+
+Maximum relevance RF : 0.12932282079499763 
+
+    D2+Attacks:
+
+Model with rank: 1
+Mean validation score: 0.954 (std: 0.000)
+Parameters: {'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 9, 'min_samples_split': 16}
+
+Model with rank: 2
+Mean validation score: 0.954 (std: 0.000)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 17, 'min_samples_split': 20}
+
+Model with rank: 3
+Mean validation score: 0.953 (std: 0.001)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 8, 'max_features': 'auto', 'min_samples_leaf': 6, 'min_samples_split': 36}
+
+Best model = 2
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98      2453
+           1       0.93      0.43      0.58       155
+
+    accuracy                           0.96      2608
+   macro avg       0.95      0.71      0.78      2608
+weighted avg       0.96      0.96      0.96      2608
+
+Confussion Matrix:
+
+preds      0   1
+actual          
+0       2448   5
+1         89  66
+Feature Relevance:
+
+                       Feature  Relevancy
+0        GyroscopeStat_COV_z_x   0.099239
+1        GyroscopeStat_COV_z_y   0.091427
+2         GyroscopeStat_x_MEAN   0.064613
+3         GyroscopeStat_z_MEAN   0.055762
+4   LinearAcceleration_COV_z_x   0.122109
+5   LinearAcceleration_COV_z_y   0.059972
+6    LinearAcceleration_x_MEAN   0.050516
+7    LinearAcceleration_z_MEAN   0.046581
+8        MagneticField_COV_z_x   0.034238
+9        MagneticField_COV_z_y   0.037146
+10        MagneticField_x_MEAN   0.093386
+11        MagneticField_z_MEAN   0.125752
+12               Pressure_MEAN   0.119260 
+
+Maximum relevance RF : 0.12575175958906412
+
+    D4+Attacks:
+
+Model with rank: 1
+Mean validation score: 0.939 (std: 0.003)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 5, 'min_samples_split': 19}
+
+Model with rank: 2
+Mean validation score: 0.935 (std: 0.003)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': 10, 'max_features': 'auto', 'min_samples_leaf': 11, 'min_samples_split': 8}
+
+Model with rank: 3
+Mean validation score: 0.930 (std: 0.005)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 6, 'max_features': 'sqrt', 'min_samples_leaf': 3, 'min_samples_split': 3}
+
+-Best model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.93      0.99      0.96      1213
+           1       0.86      0.49      0.62       171
+
+    accuracy                           0.93      1384
+   macro avg       0.90      0.74      0.79      1384
+weighted avg       0.92      0.93      0.92      1384
+
+Confussion Matrix:
+
+preds      0   1
+actual          
+0       1200  13
+1         88  83
+Feature Relevance:
+
+                       Feature  Relevancy
+0        GyroscopeStat_COV_z_x   0.131749
+1        GyroscopeStat_COV_z_y   0.079834
+2         GyroscopeStat_x_MEAN   0.061970
+3         GyroscopeStat_z_MEAN   0.059472
+4   LinearAcceleration_COV_z_x   0.151855
+5   LinearAcceleration_COV_z_y   0.070945
+6    LinearAcceleration_x_MEAN   0.043472
+7    LinearAcceleration_z_MEAN   0.040019
+8        MagneticField_COV_z_x   0.034788
+9        MagneticField_COV_z_y   0.037095
+10        MagneticField_x_MEAN   0.068965
+11        MagneticField_z_MEAN   0.122967
+12               Pressure_MEAN   0.096870 
+
+Maximum relevance RF : 0.15185530772847886 
+
+    D8+Attacks:
+
+Model with rank: 1
+Mean validation score: 0.926 (std: 0.006)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 10}
+
+Model with rank: 2
+Mean validation score: 0.924 (std: 0.004)
+Parameters: {'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 'auto', 'min_samples_leaf': 1, 'min_samples_split': 4}
+
+Model with rank: 3
+Mean validation score: 0.904 (std: 0.005)
+Parameters: {'bootstrap': True, 'criterion': 'gini', 'max_depth': 9, 'max_features': 'auto', 'min_samples_leaf': 6, 'min_samples_split': 9}
+
+-Best model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.94      0.97      0.96       608
+           1       0.88      0.78      0.83       164
+
+    accuracy                           0.93       772
+   macro avg       0.91      0.88      0.89       772
+weighted avg       0.93      0.93      0.93       772
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       591   17
+1        36  128
+Feature Relevance:
+
+                       Feature  Relevancy
+0        GyroscopeStat_COV_z_x   0.099263
+1        GyroscopeStat_COV_z_y   0.097574
+2         GyroscopeStat_x_MEAN   0.065962
+3         GyroscopeStat_z_MEAN   0.069173
+4   LinearAcceleration_COV_z_x   0.127091
+5   LinearAcceleration_COV_z_y   0.087194
+6    LinearAcceleration_x_MEAN   0.056347
+7    LinearAcceleration_z_MEAN   0.045273
+8        MagneticField_COV_z_x   0.038766
+9        MagneticField_COV_z_y   0.036320
+10        MagneticField_x_MEAN   0.073421
+11        MagneticField_z_MEAN   0.113240
+12               Pressure_MEAN   0.090375 
+
+Maximum relevance RF : 0.1270910109152616

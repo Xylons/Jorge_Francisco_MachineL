@@ -14,10 +14,13 @@ import pandas as pd
 
 
 target_list = np.array(['no attack', 'attack'])
+
 #Original = 24519 values
-# df = pd.read_csv('./FullSets/C10K+Attacks.csv') 
-df = pd.read_csv('./FullSets/D4+Attacks.csv') 
-df = df.drop(df.columns[[0, 1, 2, 3]], axis=1)
+
+df = pd.read_csv('./FullSets/C1K+Attacks.csv') 
+
+# df = pd.read_csv('./FullSets/D4+Attacks.csv') 
+# df = df.drop(df.columns[[0, 1, 2, 3]], axis=1)
 # df=df.to_numpy()
 
 
@@ -30,11 +33,11 @@ df.attack = df.attack.astype(int)
 # df_iris.head()
 print(df.head())
 
-
-sns.set()
-sns.heatmap(df.corr(), square=True, annot=True)
-# Magnetic Fields with least relation: MagneticField_x_MEAN | MagneticField_COV_z_y
-plt.show()
+# Params. Correlation
+# sns.set()
+# sns.heatmap(df.corr(), square=True, annot=True)
+# # Magnetic Fields with least relation: MagneticField_x_MEAN | MagneticField_COV_z_y
+# plt.show()
 
 
 # train, test = train_test_split(df_iris[['petal length (cm)','petal width (cm)', 'target']], test_size=0.4)
@@ -62,7 +65,11 @@ plt.show()
 # train = pd.concat(frameTrain)
 # test = pd.concat(frameTest)
 
-train, test = train_test_split(df[['MagneticField_x_MEAN','MagneticField_COV_z_y', 'attack']], test_size=0.4, random_state=20)
+df = df.sample(frac=1) # Shuffle data
+
+# train, test = train_test_split(df[['MagneticField_x_MEAN','MagneticField_COV_z_y', 'attack']], test_size=0.4, random_state=20)
+train, test = train_test_split(df[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN', 'attack']], test_size=0.4, random_state=20)
+
 print(type(train))
 train.reset_index(inplace=True)
 test.reset_index(inplace=True)
@@ -105,9 +112,13 @@ n_neighbors = 4
 weights = 'uniform'
 knn = neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights)
 # fit and predict
-knn.fit(X=train[['MagneticField_x_MEAN',
-                 'MagneticField_COV_z_y']], y=train['attack'])
-y_pred = knn.predict(X=test[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']])
+
+# knn.fit(X=train[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']], y=train['attack'])
+knn.fit(X=train[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN']], y=train['attack'])
+
+# y_pred = knn.predict(X=test[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']])
+y_pred = knn.predict(X=test[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN']])
+
 acc = accuracy_score(test['attack'], y_pred)
 print('Acc', acc)
 
@@ -116,7 +127,8 @@ cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
 h = .05  # step size in the mesh
 
 
-X = train[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']].as_matrix()
+# X = train[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']].as_matrix()
+X = train[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN']].as_matrix()
 y = train['attack'].as_matrix()
 
 # Plot the decision boundary. For that, we will assign a color to each
