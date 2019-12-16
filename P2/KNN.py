@@ -19,8 +19,10 @@ target_list = np.array(['no attack', 'attack'])
 
 df = pd.read_csv('./FullSets/C1K+Attacks.csv') 
 
-# df = pd.read_csv('./FullSets/D4+Attacks.csv') 
+# df = pd.read_csv('./FullSets/D8+Attacks.csv') 
+# df = pd.read_csv('./task3_dataset.csv') 
 # df = df.drop(df.columns[[0, 1, 2, 3]], axis=1)
+
 # df=df.to_numpy()
 
 
@@ -36,7 +38,7 @@ print(df.head())
 # Params. Correlation
 # sns.set()
 # sns.heatmap(df.corr(), square=True, annot=True)
-# # Magnetic Fields with least relation: MagneticField_x_MEAN | MagneticField_COV_z_y
+# # Magnetic Fields with least relation: MagneticField_z_MEAN | LinearAcceleration_z_MEAN
 # plt.show()
 
 
@@ -55,9 +57,9 @@ print(df.head())
 
 # # Get the train/test split for each case
 # trainNoAttack, testNoAttack = train_test_split(
-#     dfNoAttack[['MagneticField_x_MEAN', 'MagneticField_COV_z_y', 'attack']], test_size=0.4, shuffle=False)
+#     dfNoAttack[['MagneticField_z_MEAN', 'LinearAcceleration_z_MEAN','Pressure_MEAN', 'attack']], test_size=0.4, shuffle=False)
 # trainAttack, testAttack = train_test_split(
-#     dfAttack[['MagneticField_x_MEAN', 'MagneticField_COV_z_y', 'attack']], test_size=0.4, shuffle=False)
+#     dfAttack[['MagneticField_z_MEAN', 'LinearAcceleration_z_MEAN','Pressure_MEAN', 'attack']], test_size=0.4, shuffle=False)
 
 # # Prepare data to get merged into final train/test sets
 # frameTrain = [trainNoAttack, trainAttack]
@@ -65,19 +67,34 @@ print(df.head())
 # train = pd.concat(frameTrain)
 # test = pd.concat(frameTest)
 
-df = df.sample(frac=1) # Shuffle data
+# df = df.sample(frac=1) # Shuffle data
 
-# train, test = train_test_split(df[['MagneticField_x_MEAN','MagneticField_COV_z_y', 'attack']], test_size=0.4, random_state=20)
-train, test = train_test_split(df[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN', 'attack']], test_size=0.4, random_state=20)
+#                        Feature   Relevancy
+# 0        GyroscopeStat_COV_z_x   0.068270
+# 1        GyroscopeStat_COV_z_y   0.073211
+# 2         GyroscopeStat_x_MEAN   0.089344
+# 3         GyroscopeStat_z_MEAN   0.070876
+# 4   LinearAcceleration_COV_z_x   0.060621
+# 5   LinearAcceleration_COV_z_y   0.056778
+# 6    LinearAcceleration_x_MEAN   0.066431
+# 7    LinearAcceleration_z_MEAN   0.097656
+# 8        MagneticField_COV_z_x   0.058626
+# 9        MagneticField_COV_z_y   0.051260
+# 10        MagneticField_x_MEAN   0.084083
+# 11        MagneticField_z_MEAN   0.126312
+# 12               Pressure_MEAN   0.096533
+
+df.iloc[:,-1]
+train, test = train_test_split(df[['GyroscopeStat_x_MEAN','Pressure_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_z_MEAN','attack']], test_size=0.4, random_state=999)
+# train, test = train_test_split(df, test_size=0.4, random_state=999)
 
 print(type(train))
 train.reset_index(inplace=True)
 test.reset_index(inplace=True)
 # print(test.to_string())
 
-
 # shuffle = False si hay dimensión temporal
-cv = KFold(n_splits=5, shuffle=False)
+cv = KFold(n_splits=27, shuffle=False)
 
 for i, weights in enumerate(['uniform', 'distance']):
     total_scores = []
@@ -106,18 +123,18 @@ for i, weights in enumerate(['uniform', 'distance']):
 
 plt.legend()
 plt.show()
-
+print(df.columns.values[:-1])
 # constructor
 n_neighbors = 4
 weights = 'uniform'
 knn = neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights)
 # fit and predict
 
-# knn.fit(X=train[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']], y=train['attack'])
-knn.fit(X=train[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN']], y=train['attack'])
+# knn.fit(X=train[df.columns.values[:-1]], y=train['attack'])
+knn.fit(X=train[['GyroscopeStat_x_MEAN','Pressure_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_z_MEAN']], y=train['attack'])
 
-# y_pred = knn.predict(X=test[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']])
-y_pred = knn.predict(X=test[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN']])
+# y_pred = knn.predict(X=test[df.columns.values[:-1]])
+y_pred = knn.predict(X=test[['GyroscopeStat_x_MEAN','Pressure_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_z_MEAN']])
 
 acc = accuracy_score(test['attack'], y_pred)
 print('Acc', acc)
@@ -127,8 +144,8 @@ cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
 h = .05  # step size in the mesh
 
 
-# X = train[['MagneticField_x_MEAN', 'MagneticField_COV_z_y']].as_matrix()
-X = train[['LinearAcceleration_COV_z_x','MagneticField_z_MEAN']].as_matrix()
+# X = train[df.columns.values[:-1]].as_matrix()
+X = train[['GyroscopeStat_x_MEAN','Pressure_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_z_MEAN']].as_matrix()
 y = train['attack'].as_matrix()
 
 # Plot the decision boundary. For that, we will assign a color to each

@@ -7,6 +7,40 @@ spy = pd.read_csv('./FullSets/C1K+Attacks.csv')
 # spy = pd.read_csv('./FullSets/D2+Attacks.csv')
 # spy = spy.drop(spy.columns[[0, 1, 2, 3]], axis=1)
 
+# Best parameters from BIG ML
+# Field importance:
+#     1. GyroscopeStat_x_MEAN: 18.82%
+#     2. Pressure_MEAN: 16.81%
+#     3. LinearAcceleration_z_MEAN: 13.59%
+#     4. GyroscopeStat_z_MEAN: 12.04%
+#     5. MagneticField_COV_z_x: 11.51%
+#     6. MagneticField_x_MEAN: 9.25%
+#     7. MagneticField_z_MEAN: 5.28%
+#     8. MagneticField_COV_z_y: 3.57%
+#     9. LinearAcceleration_x_MEAN: 2.73%
+#     10. GyroscopeStat_COV_z_y: 2.66%
+#     11. LinearAcceleration_COV_z_y: 2.27%
+#     12. LinearAcceleration_COV_z_x: 0.85%
+#     13. GyroscopeStat_COV_z_x: 0.62%
+# spy = spy[['GyroscopeStat_x_MEAN','Pressure_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_z_MEAN','attack']]
+
+# Best parameters from RANDOM FOREST C1K
+# spy = spy[['MagneticField_z_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_x_MEAN','Pressure_MEAN','attack']]
+#                        Feature  Relevancy
+# 0        GyroscopeStat_COV_z_x   0.062548
+# 1        GyroscopeStat_COV_z_y   0.082764
+# 2         GyroscopeStat_x_MEAN   0.101205
+# 3         GyroscopeStat_z_MEAN   0.063499
+# 4   LinearAcceleration_COV_z_x   0.053992
+# 5   LinearAcceleration_COV_z_y   0.059895
+# 6    LinearAcceleration_x_MEAN   0.063062
+# 7    LinearAcceleration_z_MEAN   0.110702
+# 8        MagneticField_COV_z_x   0.049702
+# 9        MagneticField_COV_z_y   0.048288
+# 10        MagneticField_x_MEAN   0.077163
+# 11        MagneticField_z_MEAN   0.129323
+# 12               Pressure_MEAN   0.097859
+
 spy = spy.sample(frac=1) # Shuffle data
 
 p_train = 0.80 
