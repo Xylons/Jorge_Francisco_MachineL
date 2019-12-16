@@ -306,3 +306,59 @@ Feature Relevance:
 12               Pressure_MEAN   0.090375 
 
 Maximum relevance RF : 0.1270910109152616
+
+    C1k+Attacks BIGML 4 TOP Parameters
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.91      0.86      0.88       201
+           1       0.83      0.89      0.86       159
+
+    accuracy                           0.87       360
+   macro avg       0.87      0.87      0.87       360
+weighted avg       0.87      0.87      0.87       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       173   28
+1        18  141
+Feature Relevance:
+
+                     Feature  Relevancy
+0       GyroscopeStat_x_MEAN   0.231846
+1       GyroscopeStat_z_MEAN   0.156947
+2  LinearAcceleration_z_MEAN   0.253401
+3              Pressure_MEAN   0.357806 
+
+Maximum relevance RF : 0.3578061044425031 
+
+    C1K+Attacks RANDOM FOREST Top 4 Parameters
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.91      0.85      0.88       189
+           1       0.85      0.91      0.88       171
+
+    accuracy                           0.88       360
+   macro avg       0.88      0.88      0.88       360
+weighted avg       0.88      0.88      0.88       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       161   28
+1        15  156
+Feature Relevance:
+
+                     Feature  Relevancy
+0       GyroscopeStat_x_MEAN   0.198404
+1  LinearAcceleration_z_MEAN   0.218329
+2       MagneticField_z_MEAN   0.273446
+3              Pressure_MEAN   0.309821 
+
+Maximum relevance RF : 0.30982061445907233
