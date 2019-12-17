@@ -84,7 +84,7 @@ print(df.head())
 # 11        MagneticField_z_MEAN   0.126312
 # 12               Pressure_MEAN   0.096533
 
-df.iloc[:,-1]
+# df.iloc[:,-1]
 train, test = train_test_split(df[['GyroscopeStat_x_MEAN','Pressure_MEAN','LinearAcceleration_z_MEAN','GyroscopeStat_z_MEAN','attack']], test_size=0.4, random_state=999)
 # train, test = train_test_split(df, test_size=0.4, random_state=999)
 
