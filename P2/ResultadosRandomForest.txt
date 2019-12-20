@@ -33,6 +33,12 @@ preds      0   1
 actual          
 0       1993   6
 1         91  70
+
+preds      0   1
+actual          
+0        0.99  0.01
+1        0.56  0.44
+
 Feature Relevance:
 
                        Feature  Relevancy
@@ -84,6 +90,12 @@ preds     0   1
 actual         
 0       995   5
 1        64  96
+
+preds     0   1
+actual         
+0       0.99  0.01
+1       0.40   0.60
+
 Feature Relevance:
 
                        Feature  Relevancy
@@ -135,6 +147,12 @@ preds     0    1
 actual          
 0       179   21
 1        15  145
+
+preds     0    1
+actual          
+0       0.89   0.11
+1       0.09   0.91
+
 Feature Relevance:
 
                        Feature  Relevancy
@@ -186,6 +204,12 @@ preds      0   1
 actual          
 0       2448   5
 1         89  66
+
+preds      0   1
+actual          
+0        0.99  0.01
+1        0.57  0.43
+
 Feature Relevance:
 
                        Feature  Relevancy
@@ -237,6 +261,12 @@ preds      0   1
 actual          
 0       1200  13
 1         88  83
+
+preds      0   1
+actual          
+0        0.98  0.02
+1        0.51  0.49
+
 Feature Relevance:
 
                        Feature  Relevancy
@@ -288,6 +318,12 @@ preds     0    1
 actual          
 0       591   17
 1        36  128
+
+preds     0    1
+actual          
+0       0.97   0.03
+1       0.22   0.88
+
 Feature Relevance:
 
                        Feature  Relevancy
@@ -325,6 +361,12 @@ preds     0    1
 actual          
 0       173   28
 1        18  141
+
+preds     0    1
+actual          
+0       0.86   0.14
+1       0.11   0.89
+
 Feature Relevance:
 
                      Feature  Relevancy
@@ -335,7 +377,7 @@ Feature Relevance:
 
 Maximum relevance RF : 0.3578061044425031 
 
-    C1K+Attacks RANDOM FOREST Top 4 Parameters
+    C1K+Attacks RANDOM FOREST Top 4 Parameters 512 Estimators
 
 Random Forest: 
               precision    recall  f1-score   support
@@ -353,6 +395,12 @@ preds     0    1
 actual          
 0       161   28
 1        15  156
+
+preds     0    1
+actual          
+0       0.85  0.15
+1       0.09  0.91
+
 Feature Relevance:
 
                      Feature  Relevancy
@@ -362,3 +410,195 @@ Feature Relevance:
 3              Pressure_MEAN   0.309821 
 
 Maximum relevance RF : 0.30982061445907233
+
+C1K+Attacks RANDOM FOREST Top 4 Parameters 256 Estimators
+
+Model with rank: 1
+Mean validation score: 0.885 (std: 0.013)
+Parameters: {'bootstrap': True, 'criterion': 'entropy', 'max_depth': 9, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 3}
+
+Model with rank: 2
+Mean validation score: 0.871 (std: 0.018)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 8, 'min_samples_split': 30}
+
+Model with rank: 3
+Mean validation score: 0.869 (std: 0.019)
+Parameters: {'bootstrap': False, 'criterion': 'entropy', 'max_depth': None, 'max_features': 'auto', 'min_samples_leaf': 13, 'min_samples_split': 10}
+
+Best Model = 3
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.88      0.81      0.84       204
+           1       0.77      0.85      0.81       156
+
+    accuracy                           0.83       360
+   macro avg       0.83      0.83      0.83       360
+weighted avg       0.83      0.83      0.83       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       165   39
+1        24  132
+
+preds     0    1
+actual          
+0       0.80   0.20
+1       0.15   0.85
+
+Feature Relevance:
+
+                     Feature  Relevancy
+0       GyroscopeStat_x_MEAN   0.168041
+1  LinearAcceleration_z_MEAN   0.247723
+2       MagneticField_z_MEAN   0.260821
+3              Pressure_MEAN   0.323415 
+
+Maximum relevance RF : 0.32341544817509177 
+
+C1K+Attacks RANDOM FOREST Top 4 Parameters 128 Estimators
+
+Model with rank: 1
+Mean validation score: 0.855 (std: 0.021)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 16, 'min_samples_split': 7}
+
+Model with rank: 2
+Mean validation score: 0.850 (std: 0.017)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 15, 'min_samples_split': 42}
+
+Model with rank: 3
+Mean validation score: 0.846 (std: 0.025)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 9, 'max_features': 'auto', 'min_samples_leaf': 12, 'min_samples_split': 29}
+
+Best model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.86      0.81      0.84       204
+           1       0.77      0.83      0.80       156
+
+    accuracy                           0.82       360
+   macro avg       0.82      0.82      0.82       360
+weighted avg       0.82      0.82      0.82       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       166   38
+1        28  128
+
+preds     0    1
+actual          
+0       0.81   0.19
+1       0.17   0.87
+
+Feature Relevance:
+
+                     Feature  Relevancy
+0       GyroscopeStat_x_MEAN   0.191577
+1  LinearAcceleration_z_MEAN   0.245636
+2       MagneticField_z_MEAN   0.255141
+3              Pressure_MEAN   0.307645 
+
+Maximum relevance RF : 0.3076453354835189 
+
+C1K+Attacks RANDOM FOREST Top 4 Parameters 64 Estimators
+
+Model with rank: 1
+Mean validation score: 0.869 (std: 0.030)
+Parameters: {'bootstrap': True, 'criterion': 'entropy', 'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 11, 'min_samples_split': 15}
+
+Model with rank: 2
+Mean validation score: 0.868 (std: 0.019)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 9, 'max_features': 'auto', 'min_samples_leaf': 7, 'min_samples_split': 2}
+
+Model with rank: 3
+Mean validation score: 0.866 (std: 0.028)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 7, 'min_samples_split': 23}
+
+Best model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.88      0.81      0.84       204
+           1       0.77      0.85      0.81       156
+
+    accuracy                           0.83       360
+   macro avg       0.83      0.83      0.83       360
+weighted avg       0.83      0.83      0.83       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       166   38
+1        27  129
+
+preds     0    1
+actual          
+0       0.81   0.19
+1       0.17   0.83
+
+Feature Relevance:
+
+                     Feature  Relevancy
+0       GyroscopeStat_x_MEAN   0.181537
+1  LinearAcceleration_z_MEAN   0.250528
+2       MagneticField_z_MEAN   0.260310
+3              Pressure_MEAN   0.307624 
+
+Maximum relevance RF : 0.3076244887476238 
+
+C1K+Attacks RANDOM FOREST Top 4 Parameters 32 Estimators
+
+Model with rank: 1
+Mean validation score: 0.872 (std: 0.022)
+Parameters: {'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 'auto', 'min_samples_leaf': 2, 'min_samples_split': 16}
+
+Model with rank: 2
+Mean validation score: 0.862 (std: 0.025)
+Parameters: {'bootstrap': True, 'criterion': 'entropy', 'max_depth': 8, 'max_features': 'sqrt', 'min_samples_leaf': 3, 'min_samples_split': 12}
+
+Model with rank: 3
+Mean validation score: 0.862 (std: 0.014)
+Parameters: {'bootstrap': False, 'criterion': 'gini', 'max_depth': None, 'max_features': 'auto', 'min_samples_leaf': 15, 'min_samples_split': 3}
+
+Best model = 1
+
+Random Forest: 
+              precision    recall  f1-score   support
+
+           0       0.88      0.83      0.85       204
+           1       0.79      0.85      0.82       156
+
+    accuracy                           0.84       360
+   macro avg       0.83      0.84      0.83       360
+weighted avg       0.84      0.84      0.84       360
+
+Confussion Matrix:
+
+preds     0    1
+actual          
+0       169   35
+1        24  132
+
+preds     0    1
+actual          
+0       0.82   0.18
+1       0.15   0.85
+
+Feature Relevance:
+
+                     Feature  Relevancy
+0       GyroscopeStat_x_MEAN   0.173970
+1  LinearAcceleration_z_MEAN   0.248209
+2       MagneticField_z_MEAN   0.256083
+3              Pressure_MEAN   0.321738 
+
+Maximum relevance RF : 0.3217378889387661 

@@ -4,3 +4,8 @@ En los ataques: Se van a coger los 10 casos anteriores y los 10 posteriores de l
 
 Se han realizado pruebas con los 6 Datasets final, realizando la busqueda del mejor modelo.
 Datos almacenados en ResultadosRandomForest.txt
+
+Improvements:
+Diferent depths in spark
+Show all results in percentajes
+En random forest probar distintos n_estimators
